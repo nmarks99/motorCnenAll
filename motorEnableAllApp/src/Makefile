@@ -15,7 +15,7 @@ DBD += motorEnableAllSupport.dbd
 motorEnableAllSupport_DBD += motorEnableAll.dbd
 
 # specify all source files to be compiled and added to the library
-motorEnableAll_SRCS += motorEnableAll.cpp motorEnableAllCA.cpp
+motorEnableAll_SRCS += enable_all.cpp enable_all_init.cpp
 
 enableAll_LIBS += motor asyn
 motorEnableAll_LIBS += $(EPICS_BASE_IOC_LIBS)

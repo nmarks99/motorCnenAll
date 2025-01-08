@@ -8,9 +8,12 @@ iocenableAllExampleLinux_registerRecordDeviceDriver(pdbbase)
 
 < ./motorSim.iocsh
 
+
 ###############################################################################
 iocInit
 ###############################################################################
 
 # print the time our boot was finished
 date
+
+motorEnableAllInit()
