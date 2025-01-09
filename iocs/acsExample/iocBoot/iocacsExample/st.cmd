@@ -8,6 +8,8 @@ iocacsExampleLinux_registerRecordDeviceDriver(pdbbase)
 
 < ./motorSim.iocsh
 
+dbLoadRecords("$(MOTOR_ENABLE_ALL)/db/SPiiPlusEnableAll.db", "P=$(PREFIX)")
+
 ###############################################################################
 iocInit
 ###############################################################################
@@ -15,4 +17,9 @@ iocInit
 # print the time our boot was finished
 date
 
-SPiiPlusEnableAllInit("$(PREFIX)", "m1, m2, m7, m4")
+# # all motors in this IOC
+# SPiiPlusEnableAllInit()
+
+# only certain motors
+SPiiPlusEnableAllInit("$(PREFIX)", "m1, m3, m2, m4")
+
