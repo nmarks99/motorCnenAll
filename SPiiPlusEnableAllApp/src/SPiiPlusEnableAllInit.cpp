@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+// Get list of all motor records in the IOC via static database access
 std::vector<std::string> get_record_names() {
     std::vector<std::string> rec_list;
 

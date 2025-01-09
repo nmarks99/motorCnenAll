@@ -17,9 +17,12 @@ iocInit
 # print the time our boot was finished
 date
 
+
 # # all motors in this IOC
 # SPiiPlusEnableAllInit()
 
-# only certain motors
-SPiiPlusEnableAllInit("$(PREFIX)", "m1, m3, m2, m4")
+# # only certain motors
+# SPiiPlusEnableAllInit("$(PREFIX)", "m1, m3, m2, m4")
 
+# Filter by asyn port name
+SPiiPlusEnableAllInitPort("motorSim0")
