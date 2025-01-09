@@ -7,8 +7,8 @@ include $(TOP)/configure/CONFIG
 
 # PROD_NAME is used by ADCORE to add libraries
 # DBD_PREFIX is used by ADCORE to add dbd files
-PROD_NAME = enableAllExample
-DBD_PREFIX = iocenableAllExample
+PROD_NAME = acsExample
+DBD_PREFIX = iocacsExample
 PROD_IOC = $(PROD_NAME)
 
 # Note that the order in which .dbd files and libraries are added to a list
@@ -68,8 +68,8 @@ ifdef MOTOR
 endif
 
 ifdef MOTOR_ENABLE_ALL
-  $(DBD_NAME)_DBD += motorEnableAllSupport.dbd
-  $(PROD_NAME)_LIBS := motorEnableAll $($(PROD_NAME)_LIBS)
+  $(DBD_NAME)_DBD += SPiiPlusEnableAllSupport.dbd
+  $(PROD_NAME)_LIBS := SPiiPlusEnableAll $($(PROD_NAME)_LIBS)
 endif
 
 

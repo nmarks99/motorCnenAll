@@ -1,4 +1,4 @@
-/* enableAllExampleMain.c */
+/* acsExampleMain.c */
 /* Author:  Ron Sluiter */
 
 #include <stddef.h>

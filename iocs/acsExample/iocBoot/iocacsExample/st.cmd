@@ -1,10 +1,12 @@
-# ../../bin/${EPICS_HOST_ARCH}/motorEnableAll st.cmd
+# ../../bin/${EPICS_HOST_ARCH}/acsExample st.cmd
 < envPaths
 
-dbLoadDatabase("../../dbd/iocmotorEnableAllLinux.dbd")
-iocmotorEnableAllLinux_registerRecordDeviceDriver(pdbbase)
+dbLoadDatabase("../../dbd/iocacsExampleLinux.dbd")
+iocacsExampleLinux_registerRecordDeviceDriver(pdbbase)
 
 < settings.iocsh
+
+< ./motorSim.iocsh
 
 ###############################################################################
 iocInit
@@ -12,3 +14,5 @@ iocInit
 
 # print the time our boot was finished
 date
+
+SPiiPlusEnableAllInit("$(PREFIX)", "m1, m2, m7, m4")

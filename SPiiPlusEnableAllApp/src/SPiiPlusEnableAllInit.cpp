@@ -7,9 +7,6 @@
 #include <string>
 #include <vector>
 
-// needed?
-// std::vector<std::string> get_record_names();
-
 std::vector<std::string> get_record_names() {
     std::vector<std::string> rec_list;
 
@@ -21,7 +18,7 @@ std::vector<std::string> get_record_names() {
     // Check if there are any motor records at all
     long status = dbFindRecordType(pdbentry, "motor");
     if (status) {
-        errlogPrintf("motorEnableAllInit(): No motor records found\n");
+        errlogPrintf("No motor records found\n");
         // TODO: return empty vector?
     }
 

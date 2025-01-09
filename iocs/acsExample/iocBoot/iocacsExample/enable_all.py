@@ -1,6 +1,6 @@
 from epics import caput
 
-prefix = "enableAllExample:"
+prefix = "acsExample:"
 
 for i in range(1,17):
     if i % 2:
