@@ -1,2 +1,4 @@
 registrar(SPiiPlusEnableAllInitRegister)
 registrar(SPiiPlusEnableAllRegister)
+function(SPiiPlusEnableAll)
+function(SPiiPlusDisableAll)
