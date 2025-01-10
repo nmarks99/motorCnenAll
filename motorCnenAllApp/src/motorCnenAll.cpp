@@ -189,7 +189,7 @@ static const iocshArg *const motorCnenAllInitListArgs[] = {
     &motorCnenAllInitListArg0,
     &motorCnenAllInitListArg1
 };
-static const iocshFuncDef motorCnenAllInitListDef = {"motorCnenAllInit", 2, motorCnenAllInitListArgs};
+static const iocshFuncDef motorCnenAllInitListDef = {"motorCnenAllInitList", 2, motorCnenAllInitListArgs};
 static void motorCnenAllInitListFunc(const iocshArgBuf *args) {
     motorCnenAllInitList(args[0].sval, args[1].sval);
 }

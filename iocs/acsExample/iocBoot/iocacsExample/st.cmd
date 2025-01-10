@@ -18,8 +18,8 @@ iocInit
 date
 
 
-# all motors in this IOC
-motorCnenAllInit("motorSim11")
+# # all motors in this IOC
+# motorCnenAllInit("motorSim11")
 
-# # only certain motors
-# motorCnenAllInitList("$(PREFIX)", "m1, m3, m2, m4")
+# only certain motors
+motorCnenAllInitList("$(PREFIX)", "m1, m6, m3")
