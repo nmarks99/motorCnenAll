@@ -1,4 +1,4 @@
 registrar(motorCnenAllInitRegister)
-registrar(motorCnenAllInitPortRegister)
+registrar(motorCnenAllInitListRegister)
 function(motorCnenEnableAll)
 function(motorCnenDisableAll)

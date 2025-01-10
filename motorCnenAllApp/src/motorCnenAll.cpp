@@ -10,7 +10,6 @@
 #include <registryFunction.h>
 
 static constexpr double CA_IO_TIMEOUT = 5.0; // seconds
-
 static bool initialized = false;
 
 // Defined externally due to duplicate #define's in dbAccess.h and cadef.h
@@ -18,6 +17,7 @@ extern std::vector<std::string> get_record_names();
 
 static std::vector<std::string> record_names;
 static std::vector<chid> chid_list;
+
 
 // Connect to a channel and return the channel ID for the given PV
 static chid get_chid(const std::string &record_name) {
@@ -34,6 +34,7 @@ static chid get_chid(const std::string &record_name) {
     }
     return channel_id;
 }
+
 
 // User can specify specific motors in the form of a comma separated list of motor names.
 // It is left to the user to ensure the requested motors actually exist
@@ -58,10 +59,57 @@ static std::vector<std::string> parse_motor_list(const std::string &prefix,
     return out;
 }
 
+
+// Gets CA channel ID's for all motor records in the IOC with the given
+// asyn port name present in their OUT field
+void motorCnenAllInit(const char *asyn_port) {
+    if (initialized) {
+        errlogPrintf("motorCnenAllInit: already initialized\n");
+        return;
+    }
+
+    // Create channel access context
+    SEVCHK(ca_context_create(ca_enable_preemptive_callback), "motorCnenAllInit: ca_context_create() error");
+
+    // get all motor records in this IOC, prefix is included in record_names
+    record_names = get_record_names();
+    if (record_names.size() == 0) {
+        errlogPrintf("motorCnenAllInit: No motor records found\n");
+        return;
+    }
+
+    if (asyn_port == NULL) {
+        // get channel ID for all motor records (prefix is included in record_names)
+        for (const auto &rec : record_names) {
+            errlogPrintf("Record: %s\n", rec.c_str());
+            chid_list.push_back(get_chid(rec + ".CNEN"));
+        }
+    } else {
+        // only store chid for motor records with OUT fields containing "asyn_port" string
+        for (const auto &rec : record_names) {
+            chid out_chid = get_chid(rec + ".OUT");
+            if (out_chid) {
+                char out_buff[40];
+                ca_get(DBR_STRING, out_chid, out_buff);
+                ca_pend_io(CA_IO_TIMEOUT);
+                if (std::string(out_buff).find(asyn_port) != std::string::npos) {
+                    chid_list.push_back(get_chid(rec + ".CNEN"));
+                    errlogPrintf("Record(port match): %s\n", rec.c_str()); // FIX: remove
+                } else { // FIX: remove this else when not debugging
+                    errlogPrintf("asyn port %s not found in record %s\n", asyn_port, rec.c_str());
+                }
+            }
+        }
+    }
+
+    initialized = true;
+}
+
+
 // Must be called from iocsh after iocInit
 // prefix and motor_list are optional and if either are empty, all
 // motor records in the IOC will be connected to
-void motorCnenAllInit(const char *prefix, const char *motor_list) {
+void motorCnenAllInitList(const char *prefix, const char *motor_list) {
     if (initialized) {
         errlogPrintf("motorCnenAllInit: already initialized\n");
         return;
@@ -73,12 +121,8 @@ void motorCnenAllInit(const char *prefix, const char *motor_list) {
     // Get the motor record names
     std::vector<std::string> record_names;
     if (motor_list == NULL || prefix == NULL) {
-        // get all motor records in this IOC, prefix is included in record_names
-        record_names = get_record_names();
-        if (record_names.size() == 0) {
-            errlogPrintf("motorCnenAllInit: No motor records found\n");
-            return;
-        }
+        errlogPrintf("motorCnenAllInitList: No prefix or motor list given\n");
+        return;
     } else {
         // get only requested motor records, must add prefix
         record_names = parse_motor_list(prefix, motor_list);
@@ -90,51 +134,13 @@ void motorCnenAllInit(const char *prefix, const char *motor_list) {
 
     // Connect to each CNEN PV and store the channel ID
     for (const auto &rec : record_names) {
-        errlogPrintf("Record: %s\n", rec.c_str());
+        errlogPrintf("Record: %s\n", rec.c_str()); // FIX: remove
         chid_list.push_back(get_chid(rec + ".CNEN"));
     }
 
     initialized = true;
 }
 
-// Gets CA channel ID's for all motor records in the IOC with the given
-// asyn port name present in their OUT field
-void motorCnenAllInitPort(const char *asyn_port) {
-    if (initialized) {
-        errlogPrintf("motorCnenAllInitFunc: already initialized\n");
-        return;
-    }
-
-    if (asyn_port == NULL) {
-        errlogPrintf("motorCnenAllInitPort: No asyn port given\n");
-        return;
-    }
-    // Create channel access context
-    SEVCHK(ca_context_create(ca_enable_preemptive_callback), "motorCnenAllInit: ca_context_create() error");
-
-    record_names = get_record_names();
-    if (record_names.size() == 0) {
-        errlogPrintf("motorCnenAllInitPort: No motor records found\n");
-        return;
-    }
-
-    // only store chid for motor records with OUT fields containing "asyn_port" string
-    for (const auto &rec : record_names) {
-        chid out_chid = get_chid(rec + ".OUT");
-        if (out_chid) {
-            char out_buff[40];
-            ca_get(DBR_STRING, out_chid, out_buff);
-            ca_pend_io(CA_IO_TIMEOUT);
-            if (std::string(out_buff).find(asyn_port) != std::string::npos) {
-                chid_list.push_back(get_chid(rec + ".CNEN"));
-                errlogPrintf("Saving record: %s\n", rec.c_str());
-            } else {
-                errlogPrintf("asyn port %s not found in record %s\n", asyn_port, rec.c_str());
-            }
-        }
-    }
-    initialized = true;
-}
 
 // Enables all requested motors (CNEN=1)
 // Registered as function with epicsRegisterFunction and called by sub record
@@ -142,10 +148,11 @@ long motorCnenEnableAll() {
     short val = 1;
     for (size_t i = 0; i < chid_list.size(); i++) {
         ca_put(DBF_SHORT, chid_list.at(i), &val);
-        ca_flush_io();
+        ca_flush_io(); // FIX: is this needed?
     }
     return 0;
 }
+
 
 // Disables all requested motors (CNEN=0)
 // Registered as function with epicsRegisterFunction and called by sub record
@@ -164,34 +171,36 @@ long motorCnenDisableAll() {
 // ------------------
 
 // motorCnenAllInit()
-static const iocshArg motorCnenAllInitArg0 = {"IOC prefix", iocshArgString};
-static const iocshArg motorCnenAllInitArg1 = {"Motors list", iocshArgString};
-static const iocshArg *const motorCnenAllInitArgs[] = {
-    &motorCnenAllInitArg0,
-    &motorCnenAllInitArg1
-};
-static const iocshFuncDef motorCnenAllInitDef = {"motorCnenAllInit", 2, motorCnenAllInitArgs};
+static const iocshArg motorCnenAllInitArg0 = {"asyn port", iocshArgString};
+static const iocshArg *const motorCnenAllInitArgs[] = {&motorCnenAllInitArg0};
+static const iocshFuncDef motorCnenAllInitDef = {"motorCnenAllInit", 1, motorCnenAllInitArgs};
 static void motorCnenAllInitFunc(const iocshArgBuf *args) {
-    motorCnenAllInit(args[0].sval, args[1].sval);
+    motorCnenAllInit(args[0].sval);
 }
 static void motorCnenAllInitRegister(void) {
     iocshRegister(&motorCnenAllInitDef, motorCnenAllInitFunc);
 }
 
-// motorCnenAllInitPort()
-static const iocshArg motorCnenAllInitPortArg0 = {"asyn port", iocshArgString};
-static const iocshArg *const motorCnenAllInitPortArgs[] = {&motorCnenAllInitPortArg0};
-static const iocshFuncDef motorCnenAllInitPortDef = {"motorCnenAllInitPort", 1, motorCnenAllInitPortArgs};
-static void motorCnenAllInitPortFunc(const iocshArgBuf *args) {
-    motorCnenAllInitPort(args[0].sval);
+
+// motorCnenAllInitList()
+static const iocshArg motorCnenAllInitListArg0 = {"IOC prefix", iocshArgString};
+static const iocshArg motorCnenAllInitListArg1 = {"Motors list", iocshArgString};
+static const iocshArg *const motorCnenAllInitListArgs[] = {
+    &motorCnenAllInitListArg0,
+    &motorCnenAllInitListArg1
+};
+static const iocshFuncDef motorCnenAllInitListDef = {"motorCnenAllInit", 2, motorCnenAllInitListArgs};
+static void motorCnenAllInitListFunc(const iocshArgBuf *args) {
+    motorCnenAllInitList(args[0].sval, args[1].sval);
 }
-static void motorCnenAllInitPortRegister(void) {
-    iocshRegister(&motorCnenAllInitPortDef, motorCnenAllInitPortFunc);
+static void motorCnenAllInitListRegister(void) {
+    iocshRegister(&motorCnenAllInitListDef, motorCnenAllInitListFunc);
 }
+
 
 extern "C" {
 epicsExportRegistrar(motorCnenAllInitRegister);
-epicsExportRegistrar(motorCnenAllInitPortRegister);
+epicsExportRegistrar(motorCnenAllInitListRegister);
 epicsRegisterFunction(motorCnenEnableAll);
 epicsRegisterFunction(motorCnenDisableAll);
 }

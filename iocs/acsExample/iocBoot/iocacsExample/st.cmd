@@ -18,11 +18,8 @@ iocInit
 date
 
 
-# # all motors in this IOC
-# motorCnenAllInit()
+# all motors in this IOC
+motorCnenAllInit("motorSim11")
 
 # # only certain motors
-# motorCnenAllInit("$(PREFIX)", "m1, m3, m2, m4")
-
-# Filter by asyn port name
-# motorCnenAllInitPort("motorSim0")
+# motorCnenAllInitList("$(PREFIX)", "m1, m3, m2, m4")
