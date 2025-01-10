@@ -1,0 +1,4 @@
+registrar(motorCnenAllInitRegister)
+registrar(motorCnenAllInitPortRegister)
+function(motorCnenEnableAll)
+function(motorCnenDisableAll)

@@ -8,7 +8,7 @@ iocacsExampleLinux_registerRecordDeviceDriver(pdbbase)
 
 < ./motorSim.iocsh
 
-dbLoadRecords("$(MOTOR_ENABLE_ALL)/db/SPiiPlusEnableAll.db", "P=$(PREFIX)")
+dbLoadRecords("$(MOTOR_CNEN_ALL)/db/motorCnenAll.db", "P=$(PREFIX)")
 
 ###############################################################################
 iocInit
@@ -19,10 +19,10 @@ date
 
 
 # # all motors in this IOC
-# SPiiPlusEnableAllInit()
+# motorCnenAllInit()
 
 # # only certain motors
-# SPiiPlusEnableAllInit("$(PREFIX)", "m1, m3, m2, m4")
+# motorCnenAllInit("$(PREFIX)", "m1, m3, m2, m4")
 
 # Filter by asyn port name
-SPiiPlusEnableAllInitPort("motorSim0")
+# motorCnenAllInitPort("motorSim0")

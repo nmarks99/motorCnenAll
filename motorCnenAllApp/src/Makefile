@@ -8,17 +8,17 @@ include $(TOP)/configure/CONFIG
 #==================================================
 # build a support library
 
-LIBRARY_IOC += SPiiPlusEnableAll
+LIBRARY_IOC += motorCnenAll
 
-DBD += SPiiPlusEnableAllSupport.dbd
+DBD += motorCnenAllSupport.dbd
 
-SPiiPlusEnableAllSupport_DBD += SPiiPlusEnableAll.dbd
+motorCnenAllSupport_DBD += motorCnenAll.dbd
 
 # specify all source files to be compiled and added to the library
-SPiiPlusEnableAll_SRCS += SPiiPlusEnableAll.cpp SPiiPlusEnableAllInit.cpp
+motorCnenAll_SRCS += motorCnenAll.cpp motorCnenAllInit.cpp
 
 enableAll_LIBS += motor asyn
-SPiiPlusEnableAll_LIBS += $(EPICS_BASE_IOC_LIBS)
+motorCnenAll_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #===========================
 

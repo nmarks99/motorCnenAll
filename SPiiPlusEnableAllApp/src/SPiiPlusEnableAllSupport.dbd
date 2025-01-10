@@ -1,4 +1,0 @@
-registrar(SPiiPlusEnableAllInitRegister)
-registrar(SPiiPlusEnableAllInitPortRegister)
-function(SPiiPlusEnableAll)
-function(SPiiPlusDisableAll)

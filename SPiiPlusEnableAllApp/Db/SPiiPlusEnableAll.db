@@ -1,6 +1,0 @@
-record(sub, "$(P)SPiiPlusEnableAll") {
-    field(SNAM, "SPiiPlusEnableAll")
-}
-record(sub, "$(P)SPiiPlusDisableAll") {
-    field(SNAM, "SPiiPlusDisableAll")
-}

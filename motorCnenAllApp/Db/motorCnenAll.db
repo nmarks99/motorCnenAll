@@ -1,0 +1,6 @@
+record(sub, "$(P)motorCnenEnableAll") {
+    field(SNAM, "motorCnenEnableAll")
+}
+record(sub, "$(P)motorCnenDisableAll") {
+    field(SNAM, "motorCnenDisableAll")
+}

@@ -61,14 +61,14 @@ static std::vector<std::string> parse_motor_list(const std::string &prefix,
 // Must be called from iocsh after iocInit
 // prefix and motor_list are optional and if either are empty, all
 // motor records in the IOC will be connected to
-void SPiiPlusEnableAllInit(const char *prefix, const char *motor_list) {
+void motorCnenAllInit(const char *prefix, const char *motor_list) {
     if (initialized) {
-        errlogPrintf("SPiiPlusEnableAllInit: already initialized\n");
+        errlogPrintf("motorCnenAllInit: already initialized\n");
         return;
     }
 
     // Create channel access context
-    SEVCHK(ca_context_create(ca_enable_preemptive_callback), "SPiiPlusEnableAllInit: ca_context_create() error");
+    SEVCHK(ca_context_create(ca_enable_preemptive_callback), "motorCnenAllInit: ca_context_create() error");
 
     // Get the motor record names
     std::vector<std::string> record_names;
@@ -76,14 +76,14 @@ void SPiiPlusEnableAllInit(const char *prefix, const char *motor_list) {
         // get all motor records in this IOC, prefix is included in record_names
         record_names = get_record_names();
         if (record_names.size() == 0) {
-            errlogPrintf("SPiiPlusEnableAllInit: No motor records found\n");
+            errlogPrintf("motorCnenAllInit: No motor records found\n");
             return;
         }
     } else {
         // get only requested motor records, must add prefix
         record_names = parse_motor_list(prefix, motor_list);
         if (record_names.size() == 0) {
-            errlogPrintf("SPiiPlusEnableAllInit: Error parsing requested motors:\n%s\n",motor_list);
+            errlogPrintf("motorCnenAllInit: Error parsing requested motors:\n%s\n",motor_list);
             return;
         }
     }
@@ -99,22 +99,22 @@ void SPiiPlusEnableAllInit(const char *prefix, const char *motor_list) {
 
 // Gets CA channel ID's for all motor records in the IOC with the given
 // asyn port name present in their OUT field
-void SPiiPlusEnableAllInitPort(const char *asyn_port) {
+void motorCnenAllInitPort(const char *asyn_port) {
     if (initialized) {
-        errlogPrintf("SPiiPlusEnableAllInitFunc: already initialized\n");
+        errlogPrintf("motorCnenAllInitFunc: already initialized\n");
         return;
     }
 
     if (asyn_port == NULL) {
-        errlogPrintf("SPiiPlusEnableAllInitPort: No asyn port given\n");
+        errlogPrintf("motorCnenAllInitPort: No asyn port given\n");
         return;
     }
     // Create channel access context
-    SEVCHK(ca_context_create(ca_enable_preemptive_callback), "SPiiPlusEnableAllInit: ca_context_create() error");
+    SEVCHK(ca_context_create(ca_enable_preemptive_callback), "motorCnenAllInit: ca_context_create() error");
 
     record_names = get_record_names();
     if (record_names.size() == 0) {
-        errlogPrintf("SPiiPlusEnableAllInitPort: No motor records found\n");
+        errlogPrintf("motorCnenAllInitPort: No motor records found\n");
         return;
     }
 
@@ -138,7 +138,7 @@ void SPiiPlusEnableAllInitPort(const char *asyn_port) {
 
 // Enables all requested motors (CNEN=1)
 // Registered as function with epicsRegisterFunction and called by sub record
-long SPiiPlusEnableAll() {
+long motorCnenEnableAll() {
     short val = 1;
     for (size_t i = 0; i < chid_list.size(); i++) {
         ca_put(DBF_SHORT, chid_list.at(i), &val);
@@ -149,7 +149,7 @@ long SPiiPlusEnableAll() {
 
 // Disables all requested motors (CNEN=0)
 // Registered as function with epicsRegisterFunction and called by sub record
-long SPiiPlusDisableAll() {
+long motorCnenDisableAll() {
     short val = 0;
     for (size_t i = 0; i < chid_list.size(); i++) {
         ca_put(DBF_SHORT, chid_list.at(i), &val);
@@ -163,35 +163,35 @@ long SPiiPlusDisableAll() {
 // iocsh registration
 // ------------------
 
-// SPiiPlusEnableAllInit()
-static const iocshArg SPiiPlusEnableAllInitArg0 = {"IOC prefix", iocshArgString};
-static const iocshArg SPiiPlusEnableAllInitArg1 = {"Motors list", iocshArgString};
-static const iocshArg *const SPiiPlusEnableAllInitArgs[] = {
-    &SPiiPlusEnableAllInitArg0,
-    &SPiiPlusEnableAllInitArg1
+// motorCnenAllInit()
+static const iocshArg motorCnenAllInitArg0 = {"IOC prefix", iocshArgString};
+static const iocshArg motorCnenAllInitArg1 = {"Motors list", iocshArgString};
+static const iocshArg *const motorCnenAllInitArgs[] = {
+    &motorCnenAllInitArg0,
+    &motorCnenAllInitArg1
 };
-static const iocshFuncDef SPiiPlusEnableAllInitDef = {"SPiiPlusEnableAllInit", 2, SPiiPlusEnableAllInitArgs};
-static void SPiiPlusEnableAllInitFunc(const iocshArgBuf *args) {
-    SPiiPlusEnableAllInit(args[0].sval, args[1].sval);
+static const iocshFuncDef motorCnenAllInitDef = {"motorCnenAllInit", 2, motorCnenAllInitArgs};
+static void motorCnenAllInitFunc(const iocshArgBuf *args) {
+    motorCnenAllInit(args[0].sval, args[1].sval);
 }
-static void SPiiPlusEnableAllInitRegister(void) {
-    iocshRegister(&SPiiPlusEnableAllInitDef, SPiiPlusEnableAllInitFunc);
+static void motorCnenAllInitRegister(void) {
+    iocshRegister(&motorCnenAllInitDef, motorCnenAllInitFunc);
 }
 
-// SPiiPlusEnableAllInitPort()
-static const iocshArg SPiiPlusEnableAllInitPortArg0 = {"asyn port", iocshArgString};
-static const iocshArg *const SPiiPlusEnableAllInitPortArgs[] = {&SPiiPlusEnableAllInitPortArg0};
-static const iocshFuncDef SPiiPlusEnableAllInitPortDef = {"SPiiPlusEnableAllInitPort", 1, SPiiPlusEnableAllInitPortArgs};
-static void SPiiPlusEnableAllInitPortFunc(const iocshArgBuf *args) {
-    SPiiPlusEnableAllInitPort(args[0].sval);
+// motorCnenAllInitPort()
+static const iocshArg motorCnenAllInitPortArg0 = {"asyn port", iocshArgString};
+static const iocshArg *const motorCnenAllInitPortArgs[] = {&motorCnenAllInitPortArg0};
+static const iocshFuncDef motorCnenAllInitPortDef = {"motorCnenAllInitPort", 1, motorCnenAllInitPortArgs};
+static void motorCnenAllInitPortFunc(const iocshArgBuf *args) {
+    motorCnenAllInitPort(args[0].sval);
 }
-static void SPiiPlusEnableAllInitPortRegister(void) {
-    iocshRegister(&SPiiPlusEnableAllInitPortDef, SPiiPlusEnableAllInitPortFunc);
+static void motorCnenAllInitPortRegister(void) {
+    iocshRegister(&motorCnenAllInitPortDef, motorCnenAllInitPortFunc);
 }
 
 extern "C" {
-epicsExportRegistrar(SPiiPlusEnableAllInitRegister);
-epicsExportRegistrar(SPiiPlusEnableAllInitPortRegister);
-epicsRegisterFunction(SPiiPlusEnableAll);
-epicsRegisterFunction(SPiiPlusDisableAll);
+epicsExportRegistrar(motorCnenAllInitRegister);
+epicsExportRegistrar(motorCnenAllInitPortRegister);
+epicsRegisterFunction(motorCnenEnableAll);
+epicsRegisterFunction(motorCnenDisableAll);
 }

@@ -67,9 +67,9 @@ ifdef MOTOR
   $(PROD_NAME)_LIBS := Parker SmartMotor ThorLabs softMotor motorSimSupport $($(PROD_NAME)_LIBS)
 endif
 
-ifdef MOTOR_ENABLE_ALL
-  $(DBD_NAME)_DBD += SPiiPlusEnableAllSupport.dbd
-  $(PROD_NAME)_LIBS := SPiiPlusEnableAll $($(PROD_NAME)_LIBS)
+ifdef MOTOR_CNEN_ALL
+  $(DBD_NAME)_DBD += motorCnenAllSupport.dbd
+  $(PROD_NAME)_LIBS := motorCnenAll $($(PROD_NAME)_LIBS)
 endif
 
 
