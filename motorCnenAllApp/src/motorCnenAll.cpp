@@ -88,7 +88,6 @@ void motorCnenAllInit(const char *asyn_port) {
     if (asyn_port == NULL) {
         // get channel ID for all motor records (prefix is included in record_names)
         for (const auto &rec : record_names) {
-            errlogPrintf("Record: %s\n", rec.c_str());
             chid_list.push_back(get_chid(rec + ".CNEN"));
         }
         initialized = true;
@@ -110,9 +109,6 @@ void motorCnenAllInit(const char *asyn_port) {
                 ca_pend_io(CA_IO_TIMEOUT);
                 if (std::string(out_buff).find(asyn_port) != std::string::npos) {
                     chid_list.push_back(get_chid(rec + ".CNEN"));
-                    errlogPrintf("Record(port match): %s\n", rec.c_str()); // FIX: remove
-                } else { // FIX: remove this else when not debugging
-                    errlogPrintf("asyn port %s not found in record %s\n", asyn_port, rec.c_str());
                 }
             }
         }
@@ -153,7 +149,6 @@ void motorCnenAllInitList(const char *prefix, const char *motor_list) {
 
     // Connect to each CNEN PV and store the channel ID
     for (const auto &rec : record_names) {
-        errlogPrintf("Record: %s\n", rec.c_str()); // FIX: remove
         chid_list.push_back(get_chid(rec + ".CNEN"));
     }
 
@@ -163,25 +158,21 @@ void motorCnenAllInitList(const char *prefix, const char *motor_list) {
 
 // Enables all requested motors (CNEN=1)
 // Registered as function with epicsRegisterFunction and called by sub record
-long motorCnenEnableAll() {
+void motorCnenEnableAll() {
     short val = 1;
     for (size_t i = 0; i < chid_list.size(); i++) {
         ca_put(DBF_SHORT, chid_list.at(i), &val);
-        ca_flush_io(); // FIX: is this needed?
     }
-    return 0;
 }
 
 
 // Disables all requested motors (CNEN=0)
 // Registered as function with epicsRegisterFunction and called by sub record
-long motorCnenDisableAll() {
+void motorCnenDisableAll() {
     short val = 0;
     for (size_t i = 0; i < chid_list.size(); i++) {
         ca_put(DBF_SHORT, chid_list.at(i), &val);
-        ca_flush_io();
     }
-    return 0;
 }
 
 
