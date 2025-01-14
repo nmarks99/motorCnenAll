@@ -1,4 +1,4 @@
-/* acsExampleMain.c */
+/* cnenExampleMain.c */
 /* Author:  Ron Sluiter */
 
 #include <stddef.h>

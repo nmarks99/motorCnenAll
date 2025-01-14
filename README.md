@@ -18,20 +18,21 @@ dbLoadRecords("$(MOTOR_CNEN_ALL)/db/motorCnenAll.db", "P=$(PREFIX)")
 
 After iocInit you will need to call one of the initialization functions:
 ```bash
-# Example 1: Initialize all motors in the IOC for use with motorCnenAll
+# Example 1: Tell motorCnenAll about all motors in the IOC
 motorCnenAllInit()
 
-# Example 2: Initialize all motors with asyn port ACS1
+# Example 2: Only motors with asyn port ACS1
 motorCnenAllInit("ACS1")
 
-# Example 3: Initialize only motors m1, m5, and m13
+# Example 3: Only motors m1, m5, and m13
 motorCnenAllInitList("$(PREFIX)", "m1, m5, m13")
 
-# Example 4: Initialize all motors with asyn port ACS1 and motors m1 and m3
+# Example 4: Only motors with asyn port ACS1 and motors m1 and m3
 motorCnenAllInit("ACS1")
 motorCnenAllInitList("$(PREFIX)", "m1, m3")
 
-# Example 5: Initialize all motors with asyn port ACS1 or ACS2
+# Example 5: Only motors with asyn port ACS1 or ACS2
+# Note: this is only function that can be called multiple times
 motorCnenAllInit("ACS1")
 motorCnenAllInit("ACS2")
 ```

@@ -1,11 +1,11 @@
-# ../../bin/${EPICS_HOST_ARCH}/acsExample st.cmd
+# ../../bin/${EPICS_HOST_ARCH}/cnenExample st.cmd
 < envPaths
 
-dbLoadDatabase("../../dbd/iocacsExampleLinux.dbd")
-iocacsExampleLinux_registerRecordDeviceDriver(pdbbase)
+dbLoadDatabase("../../dbd/ioccnenExampleLinux.dbd")
+ioccnenExampleLinux_registerRecordDeviceDriver(pdbbase)
 
 epicsEnvSet("IOCSH_PS1", "$(IOC)>")
-epicsEnvSet("PREFIX", "acsExample:")
+epicsEnvSet("PREFIX", "cnenExample:")
 
 # load 16 motors
 # First 1-8 are on controller 0 (motorSim0)
