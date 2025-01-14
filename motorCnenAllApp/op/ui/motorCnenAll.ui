@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>347</width>
+    <height>76</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#centralWidget {background: rgba(196, 196, 196, 255);}
+
+caTable {
+       background: cornsilk;
+       alternate-background-color: wheat;
+}
+
+caLineEdit {
+     border-radius: 1px;
+     background: lightyellow;
+     color: black;
+ }
+ 
+ caLabel {
+     border-radius: 1px;
+     background: lightyellow;
+     color: black;
+ }
+
+caTextEntry {
+    color: rgb(127, 0, 63);
+    background-color: cornsilk;
+    selection-color: #0a214c;
+    selection-background-color: wheat;
+    border: 1px groove black;
+    border-radius: 1px;
+    padding: 1px;
+}
+
+caTextEntry:focus {
+    padding: 0px;
+    border: 2px groove darkred;
+    border-radius: 1px;
+}
+
+/* when font specified, no font sizing is done any more,  font: 10pt; is not bad */
+QPushButton {
+      border-color: #00b;
+      border-radius: 2px;
+      padding: 3px;
+      border-width: 1px;
+
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						   stop:0   rgba(224, 239, 255, 255),
+						   stop:0.5 rgba(199, 215, 230, 255),
+						   stop:1   rgba(184, 214, 236, 255));
+}
+QPushButton:hover {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(201, 226, 255, 255),
+						stop:0.5 rgba(177, 204, 230, 255),
+						stop:1   rgba(163, 205, 236, 255));
+}
+QPushButton:pressed {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(174, 219, 255, 255),
+						stop:0.5 rgba(165, 199, 230, 255),
+						stop:1   rgba(134, 188, 236, 255));
+}
+
+QPushButton:disabled {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(174, 219, 255, 255),
+						stop:0.5 rgba(165, 199, 230, 255),
+						stop:1   rgba(134, 188, 236, 255));
+}
+
+
+caChoice &gt; QPushButton {
+text-align: left;
+background-color: rgba(87, 202, 228,255);
+border: 3px gray;
+}
+
+caChoice &gt; QPushButton:pressed {
+background-color: rgba(87, 202, 228,200);
+border: 3px gray;
+}
+
+caChoice &gt; QPushButton:checked {
+background-color: rgba(87, 202, 228,200);
+border: 3px gray;
+}
+
+caChoice &gt; QPushButton:default {
+background-color: lightgray;
+border: 3px gray;
+}
+
+caMenu{
+    background: lightyellow;
+}
+
+
+
+
+</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <widget class="caMessageButton" name="camessagebutton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>15</y>
+      <width>160</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="channel" stdset="0">
+     <string notr="true">$(P)motorCnenEnableAll.PROC</string>
+    </property>
+    <property name="label">
+     <string notr="true">Enable All</string>
+    </property>
+    <property name="background">
+     <color>
+      <red>115</red>
+      <green>223</green>
+      <blue>255</blue>
+     </color>
+    </property>
+    <property name="releaseMessage">
+     <string notr="true">1</string>
+    </property>
+   </widget>
+   <widget class="caMessageButton" name="camessagebutton_2">
+    <property name="geometry">
+     <rect>
+      <x>175</x>
+      <y>15</y>
+      <width>160</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="channel" stdset="0">
+     <string notr="true">$(P)motorCnenDisableAll.PROC</string>
+    </property>
+    <property name="label">
+     <string notr="true">Disable All</string>
+    </property>
+    <property name="background">
+     <color>
+      <red>115</red>
+      <green>223</green>
+      <blue>255</blue>
+     </color>
+    </property>
+    <property name="releaseMessage">
+     <string notr="true">1</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>caMessageButton</class>
+   <extends>QPushButton</extends>
+   <header>caMessageButton</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

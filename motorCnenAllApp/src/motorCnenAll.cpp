@@ -11,11 +11,13 @@
 
 static constexpr double CA_IO_TIMEOUT = 5.0; // seconds
 static bool initialized = false;
+static bool context_created = false;
 
 // Defined externally due to duplicate #define's in dbAccess.h and cadef.h
 extern std::vector<std::string> get_record_names();
 
 static std::vector<std::string> record_names;
+static std::vector<std::string> port_names;
 static std::vector<chid> chid_list;
 
 
@@ -69,7 +71,12 @@ void motorCnenAllInit(const char *asyn_port) {
     }
 
     // Create channel access context
-    SEVCHK(ca_context_create(ca_enable_preemptive_callback), "motorCnenAllInit: ca_context_create() error");
+    if (!context_created) {
+        SEVCHK(ca_context_create(ca_enable_preemptive_callback), "motorCnenAllInit: ca_context_create() error");
+        context_created = true;
+    } else {
+        errlogPrintf("CA context already created\n");
+    }
 
     // get all motor records in this IOC, prefix is included in record_names
     record_names = get_record_names();
@@ -84,8 +91,17 @@ void motorCnenAllInit(const char *asyn_port) {
             errlogPrintf("Record: %s\n", rec.c_str());
             chid_list.push_back(get_chid(rec + ".CNEN"));
         }
+        initialized = true;
     } else {
-        // only store chid for motor records with OUT fields containing "asyn_port" string
+        // if the requested asyn port has already been checked, return
+        if (std::find(port_names.begin(), port_names.end(), asyn_port) != port_names.end()) {
+            errlogPrintf("motorCnenAllInit: already intialized with asyn port %s\n", asyn_port);
+            return;
+        } else {
+            port_names.push_back(asyn_port);
+        }
+
+        // only store chid for motor records with OUT fields containing "asyn port" string
         for (const auto &rec : record_names) {
             chid out_chid = get_chid(rec + ".OUT");
             if (out_chid) {
@@ -102,7 +118,6 @@ void motorCnenAllInit(const char *asyn_port) {
         }
     }
 
-    initialized = true;
 }
 
 
@@ -116,10 +131,14 @@ void motorCnenAllInitList(const char *prefix, const char *motor_list) {
     }
 
     // Create channel access context
-    SEVCHK(ca_context_create(ca_enable_preemptive_callback), "motorCnenAllInit: ca_context_create() error");
+    if (!context_created) {
+        SEVCHK(ca_context_create(ca_enable_preemptive_callback), "motorCnenAllInit: ca_context_create() error");
+        context_created = true;
+    } else {
+        errlogPrintf("CA context already created\n");
+    }
 
     // Get the motor record names
-    std::vector<std::string> record_names;
     if (motor_list == NULL || prefix == NULL) {
         errlogPrintf("motorCnenAllInitList: No prefix or motor list given\n");
         return;

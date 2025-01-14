@@ -6,7 +6,8 @@ iocacsExampleLinux_registerRecordDeviceDriver(pdbbase)
 
 < settings.iocsh
 
-< ./motorSim.iocsh
+< motorSim0.iocsh
+< motorSim1.iocsh
 
 dbLoadRecords("$(MOTOR_CNEN_ALL)/db/motorCnenAll.db", "P=$(PREFIX)")
 
@@ -22,4 +23,7 @@ date
 # motorCnenAllInit("motorSim11")
 
 # only certain motors
-motorCnenAllInitList("$(PREFIX)", "m1, m6, m3")
+# motorCnenAllInitList("$(PREFIX)", "m1, m6, m3")
+
+motorCnenAllInit("motorSim1")
+motorCnenAllInitList("$(PREFIX)", "m1, m3")

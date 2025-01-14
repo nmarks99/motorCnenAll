@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+export CAQTDM_DISPLAY_PATH=${CAQTDM_DISPLAY_PATH}:../../motorCnenAllApp/op/ui
+/APSshare/bin/caQtDM -macro "P=acsExample:" motorCnenAll.ui
