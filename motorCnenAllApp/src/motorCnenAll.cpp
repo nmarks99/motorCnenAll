@@ -158,21 +158,23 @@ void motorCnenAllInitList(const char *prefix, const char *motor_list) {
 
 // Enables all requested motors (CNEN=1)
 // Registered as function with epicsRegisterFunction and called by sub record
-void motorCnenEnableAll() {
+static int motorCnenEnableAll() {
     short val = 1;
     for (size_t i = 0; i < chid_list.size(); i++) {
         ca_put(DBF_SHORT, chid_list.at(i), &val);
     }
+    return 0;
 }
 
 
 // Disables all requested motors (CNEN=0)
 // Registered as function with epicsRegisterFunction and called by sub record
-void motorCnenDisableAll() {
+static int motorCnenDisableAll() {
     short val = 0;
     for (size_t i = 0; i < chid_list.size(); i++) {
         ca_put(DBF_SHORT, chid_list.at(i), &val);
     }
+    return 0;
 }
 
 
