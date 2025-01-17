@@ -20,12 +20,10 @@ std::vector<std::string> get_record_names() {
     long status = dbFindRecordType(pdbentry, "motor");
     if (status) {
         errlogPrintf("No motor records found\n");
-        // TODO: return empty vector?
+        return rec_list;
     }
 
     // Get names of motor records in dbd
-    // int num_entries = dbGetNRecords(pdbentry);
-    // errlogPrintf("Found %d motor records\n", num_entries);
     status = dbFirstRecord(pdbentry);
     while (!status) {
         rec_list.push_back(dbGetRecordName(pdbentry));
