@@ -13,29 +13,14 @@ epicsEnvSet("PREFIX", "cnenExample:")
 < motorSim.iocsh
 
 # Load motorCnenEnableAll and motorCnenDisableAll PVs
-dbLoadRecords("$(MOTOR_CNEN_ALL)/db/motorCnenAll.db", "P=$(PREFIX)")
+# dbLoadRecords("$(MOTOR_CNEN_ALL)/db/motorCnenAll.db", "P=$(PREFIX)")
+dbLoadRecords("$(MOTOR_CNEN_ALL)/db/motorCnenAll.db", "P=$(PREFIX),PORT=motorSim0")
+dbLoadRecords("$(MOTOR_CNEN_ALL)/db/motorCnenAll.db", "P=$(PREFIX),PORT=motorSim1")
 
 ###############################################################################
 iocInit
 ###############################################################################
 
-# Below are some examples on how to initialize motorCnenAll.
-# This must be after iocInit. Note you can use doAfterIocInit if your IOC
-# includes the synApps std module
-
-# Example 1: Initialize all motors in the IOC for use with motorCnenAll
-motorCnenAllInit()
-
-# # Example 2: Initialize all motors with asyn port motorSim0
-# motorCnenAllInit("motorSim0")
-
-# # Example 3: Initialize motors m1, m5, and m13
-# motorCnenAllInitList("$(PREFIX)", "m1, m5, m13")
-
-# # Example 4: Initialize all motors on controller 1 and motors m1 and m3
-# motorCnenAllInit("motorSim1")
-# motorCnenAllInitList("$(PREFIX)", "m1, m3")
-
-# # Example 5: Initialize all motors with asyn port motorSim0 or motorSim1
-# motorCnenAllInit("motorSim0")
-# motorCnenAllInit("motorSim1")
+# Example 2: Initialize all motors with asyn port motorSim0
+motorCnenAllInit("motorSim0")
+motorCnenAllInit("motorSim1")

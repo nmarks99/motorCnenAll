@@ -2,12 +2,15 @@
 #include <regex>
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <iostream>
 
 #include <cadef.h>
 #include <epicsExport.h>
 #include <errlog.h>
 #include <iocsh.h>
 #include <registryFunction.h>
+#include <aSubRecord.h>
 
 static constexpr double CA_IO_TIMEOUT = 5.0; // seconds
 static bool initialized = false;
@@ -20,6 +23,7 @@ static std::vector<std::string> record_names;
 static std::vector<std::string> port_names;
 static std::vector<chid> chid_list;
 
+static std::unordered_map<std::string, std::vector<chid>> asyn_chid_map;
 
 // Connect to a channel and return the channel ID for the given PV
 static chid get_chid(const std::string &record_name) {
@@ -108,7 +112,9 @@ void motorCnenAllInit(const char *asyn_port) {
                 ca_get(DBR_STRING, out_chid, out_buff);
                 ca_pend_io(CA_IO_TIMEOUT);
                 if (std::string(out_buff).find(asyn_port) != std::string::npos) {
-                    chid_list.push_back(get_chid(rec + ".CNEN"));
+                    printf("Saving %s -> %s\n", asyn_port, (rec+".CNEN").c_str());
+                    asyn_chid_map[asyn_port].push_back(get_chid(rec + ".CNEN"));
+                    // chid_list.push_back(get_chid(rec + ".CNEN"));
                 }
             }
         }
@@ -156,26 +162,61 @@ void motorCnenAllInitList(const char *prefix, const char *motor_list) {
 }
 
 
+// // Enables all requested motors (CNEN=1)
+// // Registered as function with epicsRegisterFunction and called by sub record
+// static int motorCnenEnableAll() {
+    // short val = 1;
+    // for (size_t i = 0; i < chid_list.size(); i++) {
+        // ca_put(DBF_SHORT, chid_list.at(i), &val);
+    // }
+    // return 0;
+// }
+
+// // Disables all requested motors (CNEN=0)
+// // Registered as function with epicsRegisterFunction and called by sub record
+// static int motorCnenDisableAll() {
+    // short val = 0;
+    // for (size_t i = 0; i < chid_list.size(); i++) {
+        // ca_put(DBF_SHORT, chid_list.at(i), &val);
+    // }
+    // return 0;
+// }
+
 // Enables all requested motors (CNEN=1)
-// Registered as function with epicsRegisterFunction and called by sub record
-static int motorCnenEnableAll() {
-    short val = 1;
-    for (size_t i = 0; i < chid_list.size(); i++) {
-        ca_put(DBF_SHORT, chid_list.at(i), &val);
+// Registered as function with epicsRegisterFunction and called by aSub record
+static int motorCnenEnableAll(aSubRecord *psub) {
+
+    std::string port_name((char *)psub->a);
+        
+    if (asyn_chid_map.count(port_name) > 0) {
+        auto chids = asyn_chid_map.at(port_name);
+        short val = 1;
+        for (size_t i = 0; i < chids.size(); i++) {
+            ca_put(DBF_SHORT, chids.at(i), &val);
+        }
     }
+
+    return 0;
+}
+
+// Disabled all requested motors (CNEN=0)
+// Registered as function with epicsRegisterFunction and called by aSub record
+static int motorCnenDisableAll(aSubRecord *psub) {
+
+    std::string port_name((char *)psub->a);
+        
+    if (asyn_chid_map.count(port_name) > 0) {
+        auto chids = asyn_chid_map.at(port_name);
+        short val = 0;
+        for (size_t i = 0; i < chids.size(); i++) {
+            ca_put(DBF_SHORT, chids.at(i), &val);
+        }
+    }
+
     return 0;
 }
 
 
-// Disables all requested motors (CNEN=0)
-// Registered as function with epicsRegisterFunction and called by sub record
-static int motorCnenDisableAll() {
-    short val = 0;
-    for (size_t i = 0; i < chid_list.size(); i++) {
-        ca_put(DBF_SHORT, chid_list.at(i), &val);
-    }
-    return 0;
-}
 
 
 // ------------------

@@ -1,6 +1,19 @@
-record(sub, "$(P)motorCnenEnableAll") {
-    field(SNAM, "motorCnenEnableAll")
+record(stringout, "$(P)motorCnenAll:$(PORT)_string") {
+    field(VAL, "$(PORT)")
 }
-record(sub, "$(P)motorCnenDisableAll") {
+
+record(aSub, "$(P)$(PORT):EnableAllCNEN") {
+    field(SNAM, "motorCnenEnableAll")
+    field(INPA, "$(P)motorCnenAll:$(PORT)_string")
+    field(FTA, "STRING")
+    field(FTVA, "STRING")
+    field(NOA, "1")
+}
+
+record(aSub, "$(P)$(PORT):DisableAllCNEN") {
     field(SNAM, "motorCnenDisableAll")
+    field(INPA, "$(P)motorCnenAll:$(PORT)_string")
+    field(FTA, "STRING")
+    field(FTVA, "STRING")
+    field(NOA, "1")
 }
