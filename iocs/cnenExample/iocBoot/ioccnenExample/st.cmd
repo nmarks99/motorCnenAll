@@ -22,8 +22,17 @@ dbLoadRecords("$(MOTOR_CNEN_ALL)/db/motorCnenAll.db", "P=$(PREFIX),PORT=all")
 iocInit
 ###############################################################################
 
-# Example 2: Initialize all motors with asyn port motorSim0
-motorCnenAllInit()
+# Initialize motorCnenAll for each desired port.
+# Must match the PORT macro passed to the dbLoadRecords calls above.
+
+# Initialize motorSim0
 motorCnenAllInit("motorSim0")
+
+# Initialize motorSim1
 motorCnenAllInit("motorSim1")
+
+# Initialize list1
 motorCnenAllInitList("list1", "$(PREFIX)", "m1,m3, m5, m16")
+
+# No argument will create port called "all"
+motorCnenAllInit()
